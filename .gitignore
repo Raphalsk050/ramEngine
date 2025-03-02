@@ -1,0 +1,5 @@
+/bazel-*
+.vscode
+.idea
+.clwb
+MODULE.bazel.lock

@@ -1,0 +1,26 @@
+module(
+    name = "ramengine",
+    version = "0.1",
+)
+
+# Regras para compilar dependências externas em C/C++
+bazel_dep(name = "rules_foreign_cc", version = "0.10.1")
+
+# Dependência para baixar e integrar o GLFW
+http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+http_archive(
+    name = "glfw",
+    url = "https://github.com/glfw/glfw/releases/download/3.4/glfw-3.4.zip",
+    sha256 = "b5ec004b2712fd08e8861dc271428f048775200a2df719ccf575143ba749a3e9",
+    strip_prefix = "glfw-3.4",
+    build_file = "//src/third_party:glfw.BUILD",
+)
+
+http_archive(
+    name = "bullet",
+    urls = ["https://github.com/bulletphysics/bullet3/archive/refs/tags/3.25.tar.gz"],  # Verifique a versão mais recente
+    sha256 = "c45afb6399e3f68036ddb641c6bf6f552bf332d5ab6be62f7e6c54eda05ceb77",
+    strip_prefix = "bullet3-3.25",  # Ajuste conforme a versão baixada
+    build_file = "//src/third_party:bullet.BUILD",
+)

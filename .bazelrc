@@ -1,0 +1,5 @@
+# .bazelrc
+build --cxxopt=-std=c++20
+build --cxxopt=-O2
+build --compiler=clang  # Opcional, ajuste se necessário
+build --enable_bzlmod   # Ativa o Bzlmod

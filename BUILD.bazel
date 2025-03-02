@@ -1,0 +1,40 @@
+cc_library(
+    name = "window",
+    hdrs = ["src/window/window.h"],
+)
+
+cc_library(
+    name = "glfw_window",
+    srcs = ["src/window/glfw_window.cpp"],
+    hdrs = ["src/window/glfw_window.h"],
+    deps = [
+        ":window",
+        "@glfw//:glfw",  # Dependência do GLFW configurada no módulo
+    ],
+)
+
+cc_library(
+    name = "physics_world",
+    srcs = ["src/physics/physics_world.cpp"],
+    hdrs = ["src/physics/physics_world.h"],
+    deps = ["@bullet//:bullet"],
+)
+
+cc_library(
+    name = "engine",
+    srcs = ["src/engine/engine.cpp"],
+    hdrs = ["src/engine/engine.h"],
+    deps = [
+        ":window",
+        ":physics_world",
+    ],
+)
+
+cc_binary(
+    name = "ramengine",
+    srcs = ["src/main.cpp"],
+    deps = [
+        ":engine",
+        ":glfw_window",
+    ],
+)
