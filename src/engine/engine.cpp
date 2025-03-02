@@ -18,35 +18,53 @@ namespace ramengine {
 	}
 
 	void Engine::run() {
-		std::cout << "Engine running...\n";
 		float deltaTime = 1.0f / 60.0f;
 
-		btTransform groundTransform;
-		groundTransform.setIdentity();
-		groundTransform.setOrigin(btVector3(0, 0, 0));
+		// static floor
+		btTransform groundPlaneTransform;
+		groundPlaneTransform.setIdentity();
+		groundPlaneTransform.setOrigin(btVector3(0, -2, 0)); // Chão a Y = -2
+		btStaticPlaneShape* groundPlaneShape = new btStaticPlaneShape(btVector3(0, 1, 0), 0); // Plana no eixo Y
+		btDefaultMotionState* groundMotionState = new btDefaultMotionState(groundPlaneTransform);
+		btRigidBody::btRigidBodyConstructionInfo groundInfo(0.0f, groundMotionState, groundPlaneShape, btVector3(0, 0, 0));
+		btRigidBody* groundBody = new btRigidBody(groundInfo);
+		groundBody->setCollisionFlags(groundBody->getCollisionFlags() | btCollisionObject::CF_STATIC_OBJECT);
+
+		// dynamic cube
+		btTransform cube_transform;
+		cube_transform.setIdentity();
+		cube_transform.setOrigin(btVector3(20, 20, 0));
+		auto collision_shape = new btBoxShape(btVector3(btScalar(2.), btScalar(2.), btScalar(2.)));
 		btVector3 localInertia(0, 0, 0);
-		auto *groundShape = new btBoxShape(btVector3(btScalar(2.), btScalar(2.), btScalar(2.)));
-		auto *myMotionState = new btDefaultMotionState(groundTransform);
-		btRigidBody::btRigidBodyConstructionInfo cInfo(1.0f, myMotionState, groundShape, localInertia);
+		collision_shape->calculateLocalInertia(10.0f, localInertia);
+		auto *myMotionState = new btDefaultMotionState(cube_transform);
+		btRigidBody::btRigidBodyConstructionInfo cInfo(10.0f, myMotionState, collision_shape, localInertia);
 		btRigidBody *rigid_body = new btRigidBody(cInfo);
 
+
+		physicsWorld_.addRigidBody(groundBody);
+		physicsWorld_.addRigidBody(rigid_body);
+
 		// Configurações iniciais do OpenGL
-		glEnable(GL_DEPTH_TEST);  // Ativa teste de profundidade
+		glEnable(GL_DEPTH_TEST); // Ativa teste de profundidade
 		SetupProjection();
 		setupView();
 
 		while (window_->isOpen()) {
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // Limpa a tela
-
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Limpa a tela
 			physicsWorld_.update(deltaTime);
+			std::cout << "Atualizando física com deltaTime: " << deltaTime << std::endl;
+
 			camera_.update(*input_, deltaTime); // Atualiza a câmera
 			camera_.apply(); // Aplica a transformação da câmera
 
-			auto collision_shape = dynamic_cast<btBoxShape *>(rigid_body->getCollisionShape());
-			DebugUtils::drawWiredCube(collision_shape, rigid_body->getWorldTransform());
+			DebugUtils::drawFilledCube(collision_shape, rigid_body->getWorldTransform());
+			DebugUtils::drawFilledPlane(groundPlaneShape, groundBody->getWorldTransform());
 
+			auto position = rigid_body->getWorldTransform().getOrigin();
+			std::cout << "X:" << position.getX() << " Y:" << position.getY() << " Z:" << position.getZ() << std::endl;
 
-			window_->update();  // Atualiza a janela
+			window_->update(); // Atualiza a janela
 		}
 	}
 
@@ -59,6 +77,6 @@ namespace ramengine {
 	void Engine::setupView() {
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
-		gluLookAt(0.0f, 0.0f, 5.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);// Vetor "up" que define o "topo" da câmera
+		gluLookAt(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f); // Vetor "up" que define o "topo" da câmera
 	}
 } // namespace ramengine

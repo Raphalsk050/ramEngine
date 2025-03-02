@@ -31,8 +31,6 @@ GlfwWindow::~GlfwWindow() {
     }
 
     glfwMakeContextCurrent(window_);
-    std::cout << "Versão do OpenGL: " << glGetString(GL_VERSION) << std::endl;
-
     return true;
 }
 

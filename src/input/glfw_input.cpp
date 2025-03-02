@@ -29,7 +29,9 @@ namespace ramengine {
 		glfwGetCursorPos(window_, &currentX, &currentY);
 
 		dx = currentX - lastX_;
-		dy = lastY_ - currentY;
+		dy = currentY - lastY_;
+		dx = -dx;
+		dy = -dy;
 		lastX_ = currentX;  // Atualiza a posição anterior
 		lastY_ = currentY;
 	}

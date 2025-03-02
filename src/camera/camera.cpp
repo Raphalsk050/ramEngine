@@ -1,11 +1,11 @@
 #include "camera.h"
 #include <cmath>
 #include <iostream>
-#include <ostream>
+#include <bits/stl_algo.h>
 
 namespace ramengine {
 
-Camera::Camera() : position_(btVector3(0.0f, 5.0f, 5.0f)) {
+Camera::Camera() : position_(btVector3(0.0f, 0.0f,0.0f)) {
     // Posição inicial: acima e atrás do chão
 }
 
@@ -37,6 +37,8 @@ void Camera::apply() const {
 void Camera::updateRotation(double dx, double dy) {
     yaw_ += dx * mouseSensitivity_;
     pitch_ += dy * mouseSensitivity_;
+
+    pitch_ = std::clamp<double>(pitch_, -70, 70);
 
     //std::cout << "yaw_: " << yaw_ << ", pitch_: " << pitch_ << std::endl;
 

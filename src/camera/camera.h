@@ -30,7 +30,7 @@ namespace ramengine {
 		double yaw_ = -90.0f; // Ângulo horizontal (yaw)
 		double pitch_ = 0.0f; // Ângulo vertical (pitch)
 		float movementSpeed_ = 5.0f; // Velocidade de movimento
-		float mouseSensitivity_ = 1.0f; // Sensibilidade do mouse
+		float mouseSensitivity_ = 0.5f; // Sensibilidade do mouse
 
 		void updateRotation(double dx, double dy);
 
