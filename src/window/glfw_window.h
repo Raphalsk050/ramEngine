@@ -12,6 +12,7 @@ public:
     ~GlfwWindow() override;
     bool initialize(int width, int height, const char* title) override;
     void update() override;
+    GLFWwindow* getGLFWwindow() override;
     void close() override;
     bool isOpen() const override;
 

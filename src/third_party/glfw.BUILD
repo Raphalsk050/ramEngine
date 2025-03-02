@@ -2,7 +2,7 @@ load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
 
 cmake(
     name = "glfw",
-    lib_source = "@glfw//:all_srcs",  # Tentativa alternativa
+    lib_source = "@glfw//:all_srcs",
     out_static_libs = ["libglfw3.a"],
     cache_entries = {
         "GLFW_BUILD_EXAMPLES": "OFF",

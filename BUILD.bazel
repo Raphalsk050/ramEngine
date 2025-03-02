@@ -1,6 +1,9 @@
 cc_library(
     name = "window",
     hdrs = ["src/window/window.h"],
+    deps = [
+        "@glfw",
+    ],
 )
 
 cc_library(
@@ -9,7 +12,6 @@ cc_library(
     hdrs = ["src/window/glfw_window.h"],
     deps = [
         ":window",
-        "@glfw//:glfw",  # Dependência do GLFW configurada no módulo
     ],
 )
 
@@ -17,7 +19,42 @@ cc_library(
     name = "physics_world",
     srcs = ["src/physics/physics_world.cpp"],
     hdrs = ["src/physics/physics_world.h"],
-    deps = ["@bullet//:bullet"],
+    deps = ["@bullet"],
+)
+
+cc_library(
+    name = "camera",
+    srcs = ["src/camera/camera.cpp"],
+    hdrs = ["src/camera/camera.h"],
+    deps = [
+        ":input",
+        "@bullet",
+        "@glfw",
+    ],
+)
+
+cc_library(
+    name = "input",
+    srcs = ["src/input/glfw_input.cpp"],
+    hdrs = [
+        "src/input/glfw_input.h",
+        "src/input/input.h",
+    ],
+    deps = [
+        "@bullet",
+        "@glfw",
+    ],
+)
+
+cc_library(
+    name = "utils",
+    srcs = ["src/utils/debug_utils.cpp"],
+    hdrs = ["src/utils/debug_utils.h"],
+    deps = [
+        ":glfw_window",
+        "@bullet",
+        "@glfw",
+    ],
 )
 
 cc_library(
@@ -25,16 +62,27 @@ cc_library(
     srcs = ["src/engine/engine.cpp"],
     hdrs = ["src/engine/engine.h"],
     deps = [
-        ":window",
+        ":camera",
+        ":glfw_window",
         ":physics_world",
+        ":utils",
+        ":window",
+        "@glfw",
     ],
 )
 
 cc_binary(
     name = "ramengine",
     srcs = ["src/main.cpp"],
+    linkopts = [
+        "-lGL",
+        "-lGLU",
+        "-lglfw",
+    ],
     deps = [
         ":engine",
-        ":glfw_window",
+        ":window",
+        "@bullet",
+        "@glfw",
     ],
 )
